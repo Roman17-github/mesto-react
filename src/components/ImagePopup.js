@@ -7,7 +7,7 @@ export default function ImagePopup(props) {
                 alt="картинка"
                 className="popup__image"
               />
-              <p className={props.card.name}></p>
+              <p className="popup__photoName">{props.card.name}</p>
               <button
                 type="button"
                 className="popup__close popup__close_type_photo"

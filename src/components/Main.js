@@ -3,10 +3,10 @@ import api from "../utils/Api.js";
 import Card from "./Card.js";
 
 function Main(props) {
-  const [isuserName, setuserName] = React.useState("");
-  const [isuserAvatar, setuserAvatar] = React.useState("");
-  const [isuserDescription, setuserDescription] = React.useState("");
-  const [isCards, setCards] = React.useState([]);
+  const [userName, setuserName] = React.useState("");
+  const [userAvatar, setuserAvatar] = React.useState("");
+  const [userDescription, setuserDescription] = React.useState("");
+  const [Cards, setCards] = React.useState([]);
 
   React.useEffect(() => {
     Promise.all([api.getUserInfo(), api.getCards()])
@@ -25,12 +25,7 @@ function Main(props) {
     <main className="main">
       <section className="profile">
         <div className="profile__avatar">
-          <img
-            src={isuserAvatar}
-            alt="аватар"
-            className="profile__image"
-            alt="аватар"
-          />
+          <img src={userAvatar} alt="аватар" className="profile__image" />
           <div
             className="profile__icon"
             onClick={() => props.onEditAvatar()}
@@ -38,13 +33,13 @@ function Main(props) {
         </div>
 
         <div className="profile__info">
-          <h1 className="profile__name">{isuserName}</h1>
+          <h1 className="profile__name">{userName}</h1>
           <button
             type="button"
             className="profile__edit"
             onClick={() => props.onEditProfile(true)}
           ></button>
-          <p className="profile__subline">{isuserDescription}</p>
+          <p className="profile__subline">{userDescription}</p>
         </div>
         <button
           type="button"
@@ -54,7 +49,7 @@ function Main(props) {
       </section>
 
       <section className="elements">
-        {isCards.map((card) => {
+        {Cards.map((card) => {
           return (
             <Card
               onCardClick={props.onCardClick}
