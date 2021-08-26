@@ -3,17 +3,17 @@ import api from "../utils/Api.js";
 import Card from "./Card.js";
 
 function Main(props) {
-  const [userName, setuserName] = React.useState("");
-  const [userAvatar, setuserAvatar] = React.useState("");
-  const [userDescription, setuserDescription] = React.useState("");
-  const [Cards, setCards] = React.useState([]);
+  const [userName, setUserName] = React.useState("");
+  const [userAvatar, setUserAvatar] = React.useState("");
+  const [userDescription, setUserDescription] = React.useState("");
+  const [cards, setCards] = React.useState([]);
 
   React.useEffect(() => {
     Promise.all([api.getUserInfo(), api.getCards()])
       .then(([userInfo, cards]) => {
-        setuserName(userInfo.name);
-        setuserAvatar(userInfo.avatar);
-        setuserDescription(userInfo.about);
+        setUserName(userInfo.name);
+        setUserAvatar(userInfo.avatar);
+        setUserDescription(userInfo.about);
         setCards(cards);
       })
       .catch((err) => {
@@ -49,7 +49,7 @@ function Main(props) {
       </section>
 
       <section className="elements">
-        {Cards.map((card) => {
+        {cards.map((card) => {
           return (
             <Card
               onCardClick={props.onCardClick}
