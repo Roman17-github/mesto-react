@@ -1,31 +1,21 @@
 import React from "react";
 import api from "../utils/Api.js";
 import Card from "./Card.js";
+import { currentUserContext } from "../contexts/CurrentUserContext";
 
 function Main(props) {
-  const [userName, setUserName] = React.useState("");
-  const [userAvatar, setUserAvatar] = React.useState("");
-  const [userDescription, setUserDescription] = React.useState("");
-  const [cards, setCards] = React.useState([]);
 
-  React.useEffect(() => {
-    Promise.all([api.getUserInfo(), api.getCards()])
-      .then(([userInfo, cards]) => {
-        setUserName(userInfo.name);
-        setUserAvatar(userInfo.avatar);
-        setUserDescription(userInfo.about);
-        setCards(cards);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }, []);
+  const currentUser = React.useContext(currentUserContext);
 
   return (
     <main className="main">
       <section className="profile">
         <div className="profile__avatar">
-          <img src={userAvatar} alt="аватар" className="profile__image" />
+          <img
+            src={currentUser.avatar}
+            alt="аватар"
+            className="profile__image"
+          />
           <div
             className="profile__icon"
             onClick={() => props.onEditAvatar()}
@@ -33,13 +23,13 @@ function Main(props) {
         </div>
 
         <div className="profile__info">
-          <h1 className="profile__name">{userName}</h1>
+          <h1 className="profile__name">{currentUser.name}</h1>
           <button
             type="button"
             className="profile__edit"
             onClick={() => props.onEditProfile(true)}
           ></button>
-          <p className="profile__subline">{userDescription}</p>
+          <p className="profile__subline">{currentUser.about}</p>
         </div>
         <button
           type="button"
@@ -49,14 +39,15 @@ function Main(props) {
       </section>
 
       <section className="elements">
-        {cards.map((card) => {
+        {props.cards.map((card) => {
           return (
             <Card
               onCardClick={props.onCardClick}
               key={card._id}
-              link={card.link}
-              name={card.name}
-              likes={card.likes}
+              userId={card.owner._id}
+              onCardLike={props.onCardLike}
+              onCardDelete={props.onCardDelete}
+              {...card}
             />
           );
         })}

@@ -48,20 +48,6 @@
       }).then(this._checkResponse);
     }
   
-    likeAdd(cardID) {
-      return fetch(`${this._url}/cards/likes/${cardID}`, {
-        method: "PUT",
-        headers: this._headers,
-      }).then(this._checkResponse);
-    }
-  
-    likeDelete(cardID) {
-      return fetch(`${this._url}/cards/likes/${cardID}`, {
-        method: "DELETE",
-        headers: this._headers,
-      }).then(this._checkResponse);
-    }
-  
     deleteCard(cardID) {
       return fetch(`${this._url}/cards/${cardID}`, {
         method: "DELETE",
@@ -77,6 +63,20 @@
           avatar: input.avatar,
         }),
       }).then(this._checkResponse);
+    }
+
+    changeLikeCardStatus(cardID,isLiked) {
+      if (isLiked) {
+        return fetch(`${this._url}/cards/likes/${cardID}`, {
+          method: "PUT",
+          headers: this._headers,
+        }).then(this._checkResponse);
+      } else {
+        return fetch(`${this._url}/cards/likes/${cardID}`, {
+          method: "DELETE",
+          headers: this._headers,
+        }).then(this._checkResponse);
+      }
     }
   }
 

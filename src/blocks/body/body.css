@@ -4,4 +4,5 @@
     margin: auto;
     padding:45px 0 45px;
     position: relative;
+    min-height: 100vh;
 }
