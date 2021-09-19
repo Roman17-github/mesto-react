@@ -16,13 +16,19 @@ export default function AddPlacePopup (props) {
         e.target.reset();
       } 
 
+      function clearForm() {
+        props.onClose()
+        setName("");
+        setLink("")
+      }
+
 
     return (
         <PopupWithForm
           title="Новое место"
           name="place"
           isOpen={props.isOpen}
-          onClose={props.onClose}
+          onClose={clearForm}
           buttonText={props.isLoading ? "Добавление..." : "Добавить"}
           submitType="disabled"
           onSubmit={handleSubmit}
@@ -35,6 +41,7 @@ export default function AddPlacePopup (props) {
             id="place"
             minLength="2"
             maxLength="40"
+            value={name || ""}
             required
             onChange={(e) => {setName( e.target.value)}}
           />
@@ -47,6 +54,7 @@ export default function AddPlacePopup (props) {
             id="link"
             minLength="2"
             maxLength="200"
+            value={link || ""}
             required
             onChange={(e) => {setLink( e.target.value)}}
           />

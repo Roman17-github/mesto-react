@@ -10,17 +10,27 @@ import ImagePopup from "./ImagePopup.js";
 import React from "react";
 import api from "../utils/Api.js";
 import { currentUserContext } from "../contexts/CurrentUserContext";
+import { Route, Switch, useHistory } from "react-router-dom";
+import ProtectedRoute from "./ProtectedRoute";
+import Register from "./Register";
+import Login from "./Login";
+import InfoTooltip from "./InfoTooltip";
+import * as auth from "../utils/Auth.js";
 
 function App() {
-  const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] =
+  const [isEditProfilePopupOpen, setEditProfilePopupOpen] =
     React.useState(false);
-  const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = React.useState(false);
-  const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] =
-    React.useState(false);
+  const [isAddPlacePopupOpen, setAddPlacePopupOpen] = React.useState(false);
+  const [isEditAvatarPopupOpen, setEditAvatarPopupOpen] = React.useState(false);
   const [selectedCard, setSelectedCard] = React.useState({});
   const [cards, setCards] = React.useState([]);
   const [currentUser, setCurrentUser] = React.useState({});
   const [isLoading, setLoading] = React.useState(false);
+  const [loggedIn, setLoggedIn] = React.useState(false);
+  const [isPopupStatusOpen, setPopupStatusOpen] = React.useState(false);
+  const [isSucces, setSucces] = React.useState();
+  const [email, setEmail] = React.useState("");
+  const history = useHistory();
 
   React.useEffect(() => {
     api
@@ -34,22 +44,23 @@ function App() {
   }, []);
 
   const closeAllPopups = () => {
-    setIsEditProfilePopupOpen(false);
-    setIsAddPlacePopupOpen(false);
-    setIsEditAvatarPopupOpen(false);
+    setEditProfilePopupOpen(false);
+    setAddPlacePopupOpen(false);
+    setEditAvatarPopupOpen(false);
     setSelectedCard({});
+    setPopupStatusOpen(false);
   };
 
   const handleEditProfileClick = () => {
-    setIsEditProfilePopupOpen(true);
+    setEditProfilePopupOpen(true);
   };
 
   const handleAddPlaceClick = () => {
-    setIsAddPlacePopupOpen(true);
+    setAddPlacePopupOpen(true);
   };
 
   const handleEditAvatarClick = () => {
-    setIsEditAvatarPopupOpen(true);
+    setEditAvatarPopupOpen(true);
   };
 
   const handleCardClick = (card) => {
@@ -118,6 +129,22 @@ function App() {
       });
   }, []);
 
+  React.useEffect(() => {
+    const token = localStorage.getItem("jwt");
+    if (token) {
+      auth
+        .checkToken(token)
+        .then((res) => {
+          setEmail(res.data.email);
+          setLoggedIn(true);
+          history.push("/");
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+  }, [history]);
+
   function handleCardLike(card) {
     const isLiked = card.likes.some((i) => i._id === currentUser._id);
     api.changeLikeCardStatus(card._id, !isLiked).then((newCard) => {
@@ -139,16 +166,31 @@ function App() {
   return (
     <div className="body">
       <currentUserContext.Provider value={currentUser}>
-        <Header />
-        <Main
-          onEditProfile={handleEditProfileClick}
-          onPlaceAdd={handleAddPlaceClick}
-          onEditAvatar={handleEditAvatarClick}
-          onCardClick={handleCardClick}
-          cards={cards}
-          onCardLike={handleCardLike}
-          onCardDelete={handleCardDelete}
-        />
+        <Header loggedIn={loggedIn} email={email} />
+        <Switch>
+          <Route path="/sign-up">
+            <Register
+              handlePopupStatus={setPopupStatusOpen}
+              setSucces={setSucces}
+            />
+          </Route>
+          <Route path="/sign-in">
+            <Login setLoggedIn={setLoggedIn} />
+          </Route>
+          <ProtectedRoute
+            exact
+            path="/"
+            component={Main}
+            onEditProfile={handleEditProfileClick}
+            onPlaceAdd={handleAddPlaceClick}
+            onEditAvatar={handleEditAvatarClick}
+            onCardClick={handleCardClick}
+            cards={cards}
+            onCardLike={handleCardLike}
+            onCardDelete={handleCardDelete}
+            loggedIn={loggedIn}
+          ></ProtectedRoute>
+        </Switch>
         <EditProfilePopup
           isOpen={isEditProfilePopupOpen}
           onClose={closeAllPopups}
@@ -177,6 +219,12 @@ function App() {
           submitType="delete"
         />
         <ImagePopup card={selectedCard} onClose={closeAllPopups} />
+        <InfoTooltip
+          isOpen={isPopupStatusOpen}
+          onClose={closeAllPopups}
+          isSucces={isSucces}
+        />
+
         <Footer />
       </currentUserContext.Provider>
     </div>

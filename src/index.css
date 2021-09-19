@@ -42,3 +42,16 @@
 @import url(./blocks/profile/__icon/profile__icon.css);
 @import url(./blocks/root/root.css);
 @import url(./blocks/element/__delete/_hidden/element__delete_hidden.css);
+@import url(./blocks/register/register.css);
+@import url(./blocks/login/login.css);
+@import url(./blocks/header/__login/header__login.css);
+@import url(./blocks/register/__header/register__header.css);
+@import url(./blocks/register/__signin/register__signin.css);
+@import url(./blocks/register/__login/register__login.css);
+@import url(./blocks/input/input.css);
+@import url(./blocks/submit/submit.css);
+@import url(./blocks/login/__header/login__header.css);
+@import url(./blocks/popup/__image/_status/popup__image_status.css);
+@import url(./blocks/popup/__status/popup__status.css);
+@import url(./blocks/header/__email/header__email.css);
+@import url(./blocks/header/__profile/header__profile.css);
